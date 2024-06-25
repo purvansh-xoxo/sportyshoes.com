@@ -14,22 +14,36 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
-    public Order saveOrder(Order order) {
-        return orderRepository.save(order);
-    }
-
-    @Override
-    public List<Order> getAllOrder() {
+    public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
     @Override
-    public List<Order> getOrderByUserId(Long userId) {
-        return orderRepository.findByUserId(userId);
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<Order> getOrderByProductId(Long productId) {
-        return orderRepository.findByProductId(productId);
+    public Order createOrder(Order order) {
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Order updateOrder(Long id, Order orderDetails) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order != null) {
+            order.setUser(orderDetails.getUser());
+            order.setProducts(orderDetails.getProducts());
+            order.setTotalAmount(orderDetails.getTotalAmount());
+            order.setOrderDate(orderDetails.getOrderDate());
+            return orderRepository.save(order);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void deleteOrder(Long id) {
+        orderRepository.deleteById(id);
     }
 }
